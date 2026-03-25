@@ -16,12 +16,13 @@ function App() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentPage, setCurrentPage] = useState<'home' | 'car-wash'>('home');
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const handleLoadingComplete = () => {
+    setIsTransitioning(true);
+    setTimeout(() => {
       setLoading(false);
-    }, 2500);
-    return () => clearTimeout(timer);
-  }, []);
+      setIsTransitioning(false);
+    }, 1000);
+  };
 
   const scrollTo = (id: string) => {
     if (isTransitioning) return;
@@ -41,11 +42,8 @@ function App() {
           document.getElementById(id)?.scrollIntoView({ behavior: 'instant' });
         }
       }
-    }, 1000);
-
-    setTimeout(() => {
       setIsTransitioning(false);
-    }, 1800);
+    }, 1000);
   };
 
   const handleMachineClick = (machineName: string) => {
@@ -56,37 +54,35 @@ function App() {
       if (machineName === 'CAR WASH') {
         setCurrentPage('car-wash');
       }
-    }, 1000);
-
-    setTimeout(() => {
       setIsTransitioning(false);
-    }, 1800);
+    }, 1000);
   };
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
-
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col overflow-x-hidden">
+    <div className="min-h-screen bg-white text-slate-900 font-sans flex flex-col">
       <TransitionOverlay isTransitioning={isTransitioning} />
-      <Navbar onNavigate={scrollTo} />
-      
-      <main className="flex-1">
-        {currentPage === 'home' ? (
-          <>
-            <Hero onMachineClick={handleMachineClick} />
-            <Services />
-            <Projects />
-            <About />
-            <Careers />
-            <Contact />
-            <Footer />
-          </>
-        ) : (
-          <CarWashPage />
-        )}
-      </main>
+      {loading ? (
+        <LoadingScreen onComplete={handleLoadingComplete} />
+      ) : (
+        <>
+          <Navbar onNavigate={scrollTo} />
+          <main className="flex-1">
+            {currentPage === 'home' ? (
+              <>
+                <Hero onMachineClick={handleMachineClick} />
+                <Services />
+                <Projects />
+                <About />
+                <Careers />
+                <Contact />
+                <Footer />
+              </>
+            ) : (
+              <CarWashPage />
+            )}
+          </main>
+        </>
+      )}
     </div>
   );
 }

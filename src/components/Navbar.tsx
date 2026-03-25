@@ -8,7 +8,7 @@ export default function Navbar({ onNavigate }: { onNavigate: (id: string) => voi
         {/* Logo */}
         <div className="flex items-center cursor-pointer" onClick={() => onNavigate('hero')}>
           <span className="text-2xl font-black tracking-tighter text-gray-800 flex items-center">
-            elec
+            elecc
             <span className="relative inline-flex items-center justify-center">
               <span className="absolute w-5 h-5 bg-[#ffb800] rounded-full -z-10"></span>
               t

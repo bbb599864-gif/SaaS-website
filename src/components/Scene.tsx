@@ -164,12 +164,12 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
       machines.push({ mesh: group, label });
     });
 
-    // Central "electro" Logo (Using HTML for crispness in isometric view)
+    // Central "elecctro" Logo (Using HTML for crispness in isometric view)
     const centerLogo = document.createElement('div');
     centerLogo.className = 'absolute text-4xl sm:text-6xl font-black text-[#333333] tracking-tighter pointer-events-none select-none flex items-center';
     centerLogo.style.transformOrigin = 'center center';
     centerLogo.style.transform = 'translate(-50%, -50%) rotateX(60deg) rotateZ(-45deg)';
-    centerLogo.innerHTML = `elec<span class="relative inline-flex items-center justify-center"><span class="absolute w-8 h-8 sm:w-12 sm:h-12 bg-[#ffb800] rounded-full -z-10"></span>t</span>ro`;
+    centerLogo.innerHTML = `elecc<span class="relative inline-flex items-center justify-center"><span class="absolute w-8 h-8 sm:w-12 sm:h-12 bg-[#ffb800] rounded-full -z-10"></span>t</span>ro`;
     labelsRef.current?.appendChild(centerLogo);
 
     // 6. Connections (Lines and Nodes)
