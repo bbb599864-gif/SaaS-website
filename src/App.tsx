@@ -4,17 +4,13 @@ import TransitionOverlay from './components/TransitionOverlay';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
-import Projects from './components/Projects';
-import About from './components/About';
-import Careers from './components/Careers';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
 import CarWashPage from './components/CarWashPage';
+import ContactFooter from './components/ContactFooter';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'car-wash'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts'>('home');
 
   const handleLoadingComplete = () => {
     setIsTransitioning(true);
@@ -24,24 +20,26 @@ function App() {
     }, 1000);
   };
 
-  const scrollTo = (id: string) => {
+  const navigateTo = (page: string) => {
     if (isTransitioning) return;
+    
+    // Map string to valid page type, default to home if not found
+    let targetPage: 'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' = 'home';
+    if (page === 'car-wash') targetPage = 'car-wash';
+    if (page === 'services') targetPage = 'services';
+    if (page === 'projects') targetPage = 'projects';
+    if (page === 'about') targetPage = 'about';
+    if (page === 'careers') targetPage = 'careers';
+    if (page === 'contacts') targetPage = 'contacts';
+    if (page === 'home') targetPage = 'home';
+
+    if (currentPage === targetPage) return;
+
     setIsTransitioning(true);
     
     setTimeout(() => {
-      if (id === 'home' || id === 'hero') {
-        setCurrentPage('home');
-        window.scrollTo(0, 0);
-      } else {
-        if (currentPage !== 'home') {
-          setCurrentPage('home');
-          setTimeout(() => {
-            document.getElementById(id)?.scrollIntoView({ behavior: 'instant' });
-          }, 50);
-        } else {
-          document.getElementById(id)?.scrollIntoView({ behavior: 'instant' });
-        }
-      }
+      setCurrentPage(targetPage);
+      window.scrollTo(0, 0);
       setIsTransitioning(false);
     }, 1000);
   };
@@ -53,7 +51,10 @@ function App() {
     setTimeout(() => {
       if (machineName === 'CAR WASH') {
         setCurrentPage('car-wash');
+      } else {
+        setCurrentPage('services');
       }
+      window.scrollTo(0, 0);
       setIsTransitioning(false);
     }, 1000);
   };
@@ -65,20 +66,27 @@ function App() {
         <LoadingScreen onComplete={handleLoadingComplete} />
       ) : (
         <>
-          <Navbar onNavigate={scrollTo} />
+          <Navbar onNavigate={navigateTo} />
           <main className="flex-1">
-            {currentPage === 'home' ? (
-              <>
+            {currentPage === 'home' && (
+              <div className="h-screen overflow-hidden">
                 <Hero onMachineClick={handleMachineClick} />
+              </div>
+            )}
+            {currentPage === 'services' && (
+              <div className="bg-white min-h-screen">
                 <Services />
-                <Projects />
-                <About />
-                <Careers />
-                <Contact />
-                <Footer />
-              </>
-            ) : (
+                <ContactFooter />
+              </div>
+            )}
+            {currentPage === 'car-wash' && (
               <CarWashPage />
+            )}
+            {['projects', 'about', 'careers', 'contacts'].includes(currentPage) && (
+              <div className="min-h-screen bg-white pt-32 px-6 flex flex-col items-center justify-center">
+                <h1 className="text-5xl font-bold capitalize mb-4">{currentPage.replace('-', ' ')}</h1>
+                <p className="text-gray-500">This page is under construction.</p>
+              </div>
             )}
           </main>
         </>
