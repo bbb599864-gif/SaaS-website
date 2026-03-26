@@ -3,18 +3,18 @@ import * as THREE from 'three';
 
 // Machine data based on the "electro" scene
 const machineData = [
-  { name: 'CAR WASH', pos: [-10, 0, -10], size: [6, 5, 6], color: 0xffffff, accent: 0xffb800 },
-  { name: 'KIDDIE RIDE', pos: [0, 0, -12], size: [4, 4.5, 4], color: 0xffffff, accent: 0xffb800 },
-  { name: 'PHOTOBOOTH', pos: [10, 0, -10], size: [4, 6, 4], color: 0xffffff, accent: 0xffb800 },
-  { name: 'SMART FRIDGE', pos: [-12, 0, 0], size: [4, 6, 4], color: 0xffffff, accent: 0xffb800 },
-  { name: 'EV CHARGER', pos: [-5, 0, -3], size: [3.5, 5, 3.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'CIGARETTES', pos: [5, 0, -3], size: [4, 5.5, 4], color: 0xffffff, accent: 0xffb800 },
-  { name: 'LAUNDROMAT', pos: [12, 0, 0], size: [4, 5, 4], color: 0xffffff, accent: 0xffb800 },
-  { name: 'OCS', pos: [-3, 0, 5], size: [3.5, 4, 3.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'KIOSK', pos: [6, 0, 4], size: [3, 4.5, 3], color: 0xffffff, accent: 0xffb800 },
-  { name: 'COFFEE', pos: [2, 0, 7], size: [3.5, 4.5, 3.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'CANDY', pos: [-6, 0, 11], size: [3.5, 4, 3.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'SNACKS', pos: [10, 0, 9], size: [4, 5.5, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'CAR WASH', pos: [-6.5, 0, -6.5], size: [6, 5, 6], color: 0xffffff, accent: 0xffb800 },
+  { name: 'KIDDIE RIDE', pos: [5, 0, -13], size: [4, 4.5, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'PHOTOBOOTH', pos: [11.5, 0, -13], size: [4, 6, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'SMART FRIDGE', pos: [-19.5, 0, 11.5], size: [4, 6, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'EV CHARGER', pos: [-6.5, 0, 4], size: [3.5, 5, 3.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'CIGARETTES', pos: [6.5, 0, -4], size: [4, 5.5, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'LAUNDROMAT', pos: [17, 0, -8], size: [4, 5, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'OCS', pos: [0, 0, 0], size: [3.5, 4, 3.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'KIOSK', pos: [1.5, 0, 9], size: [3, 4.5, 3], color: 0xffffff, accent: 0xffb800 },
+  { name: 'COFFEE', pos: [-5, 0, 13], size: [3.5, 4.5, 3.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'CANDY', pos: [-13, 0, 8], size: [3.5, 4, 3.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'SNACKS', pos: [11.5, 0, 1.5], size: [4, 5.5, 4], color: 0xffffff, accent: 0xffb800 },
 ];
 
 export default function Scene({ onMachineClick }: { onMachineClick?: (machineName: string) => void }) {
@@ -32,7 +32,7 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
     let width = mountRef.current.clientWidth || 800;
     let height = mountRef.current.clientHeight || 600;
     let aspect = width / height;
-    const d = 10; // Zoom out slightly to fit everything
+    const d = 14; // Zoom out slightly to fit everything
     const camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
     
     camera.position.set(15, 15, 15); // Move camera back slightly
@@ -458,9 +458,9 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
       scene.add(group);
 
       const label = document.createElement('div');
-      label.className = 'absolute text-[9px] sm:text-[11px] font-bold text-gray-800 tracking-widest whitespace-nowrap pointer-events-none select-none transition-opacity duration-300';
+      label.className = 'absolute text-[11px] sm:text-[13px] font-bold text-gray-800 tracking-widest whitespace-nowrap pointer-events-none select-none transition-opacity duration-300 bg-white/80 px-2 py-1 rounded-md shadow-sm backdrop-blur-sm';
       label.style.transformOrigin = 'center center';
-      label.style.transform = 'translate(-50%, -50%) rotateX(60deg) rotateZ(-45deg)';
+      label.style.transform = 'translate(-50%, -50%)';
       label.textContent = data.name;
       labelsRef.current?.appendChild(label);
 
@@ -469,7 +469,7 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
       icon.style.transformOrigin = 'center center';
       icon.style.transform = 'translate(-50%, -50%)';
       icon.innerHTML = `
-        <div class="w-4 h-4 bg-[#8b92ff] rounded-full shadow-[0_0_12px_rgba(139,146,255,0.9)] group-hover:scale-125 transition-transform flex items-center justify-center animate-pulse">
+        <div class="w-4 h-4 bg-[#8b92ff] rounded-full shadow-[0_0_12px_rgba(139,146,255,0.9)] group-hover:scale-125 transition-transform flex items-center justify-center">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
         </div>
       `;
@@ -510,16 +510,15 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
     scene.add(networkGroup);
 
     const paths = [
-      [machineData[0].pos, [-8, 0, -12], machineData[2].pos],
-      [machineData[1].pos, [0, 0, -10], [-8, 0, -12]],
-      [machineData[3].pos, [-14, 0, -4], machineData[4].pos, [0, 0, -4], machineData[5].pos, machineData[6].pos],
-      [machineData[7].pos, [0, 0, 6], machineData[8].pos],
-      [machineData[10].pos, [-6, 0, 8], [0, 0, 8], machineData[9].pos],
-      [machineData[11].pos, [12, 0, 4], machineData[8].pos],
-      [[-8, 0, -12], [-8, 0, -4]],
-      [[0, 0, -4], [0, 0, 0]],
-      [[0, 0, 6], [0, 0, 0]],
-      [[0, 0, 8], [0, 0, 6]],
+      // Main trunk
+      [machineData[3].pos, [-13, 0, 11.5], machineData[10].pos, [-6.5, 0, 8], machineData[4].pos, [0, 0, 4], machineData[7].pos, [6.5, 0, 0], machineData[5].pos, [11.5, 0, -4], [11.5, 0, -8], machineData[6].pos],
+      // Branches
+      [machineData[9].pos, [-6.5, 0, 13], [-6.5, 0, 8]], // COFFEE
+      [machineData[8].pos, [1.5, 0, 4], [0, 0, 4]], // KIOSK
+      [machineData[11].pos, [11.5, 0, -4]], // SNACKS
+      [machineData[0].pos, [0, 0, -6.5], machineData[7].pos], // CAR WASH
+      [machineData[1].pos, [6.5, 0, -13], machineData[5].pos], // KIDDIE RIDE
+      [machineData[2].pos, [11.5, 0, -8]], // PHOTOBOOTH
     ];
 
     paths.forEach(path => {
@@ -631,9 +630,6 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
         m.currentScale += (targetScale - m.currentScale) * 0.15;
         m.mesh.scale.set(m.currentScale, m.currentScale, m.currentScale);
         
-        // Floating
-        m.mesh.position.y = m.originalY + Math.sin(time * 2 + i) * 0.2;
-        
         // Custom animations (helicopter blades, car wash brushes, etc.)
         if (m.update) m.update(time);
       });
@@ -652,21 +648,17 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
 
         machines.forEach((m) => {
           tempV.copy(m.mesh.position);
-          tempV.x += 2.5;
-          tempV.z += 2.5;
-          tempV.y = 5.5; // Raised label slightly
+          tempV.y = 0; // Base of the machine
           tempV.project(camera);
           
           const labelX = (tempV.x * 0.5 + 0.5) * w;
           const labelY = (tempV.y * -0.5 + 0.5) * h;
           m.label.style.left = `${labelX}px`;
-          m.label.style.top = `${labelY}px`;
-          m.label.style.opacity = hoveredMachine === m.name ? '1' : '0.7';
+          m.label.style.top = `${labelY + 30}px`; // 30px below the base
+          m.label.style.opacity = hoveredMachine === m.name ? '1' : '0.8';
 
           tempV.copy(m.mesh.position);
-          tempV.x += 1.5;
-          tempV.z -= 1.5;
-          tempV.y = 7.5; // Raised icon slightly
+          tempV.y = 6; // Above the machine
           tempV.project(camera);
           
           const iconX = (tempV.x * 0.5 + 0.5) * w;
@@ -692,10 +684,10 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
       const h = mountRef.current.clientHeight || 600;
       const newAspect = w / h;
       
-      camera.left = -d * newAspect;
-      camera.right = d * newAspect;
-      camera.top = d;
-      camera.bottom = -d;
+      camera.left = -14 * newAspect;
+      camera.right = 14 * newAspect;
+      camera.top = 14;
+      camera.bottom = -14;
       camera.updateProjectionMatrix();
       
       renderer.setSize(w, h);
