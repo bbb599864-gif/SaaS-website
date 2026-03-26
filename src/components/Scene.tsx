@@ -3,18 +3,18 @@ import * as THREE from 'three';
 
 // Machine data based on the "electro" scene
 const machineData = [
-  { name: 'CAR WASH', pos: [-8, 0, -8], size: [4, 3, 4], color: 0xffffff, accent: 0xffb800 },
-  { name: 'KIDDIE RIDE', pos: [0, 0, -10], size: [2, 2.5, 2], color: 0xffffff, accent: 0xffb800 },
-  { name: 'PHOTOBOOTH', pos: [8, 0, -8], size: [2, 4, 2], color: 0xffffff, accent: 0xffb800 },
-  { name: 'SMART FRIDGE', pos: [-10, 0, 0], size: [2, 4, 2], color: 0xffffff, accent: 0xffb800 },
-  { name: 'EV CHARGER', pos: [-4, 0, -2], size: [1.5, 3, 1.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'CIGARETTES', pos: [4, 0, -2], size: [2, 3.5, 2], color: 0xffffff, accent: 0xffb800 },
-  { name: 'LAUNDROMAT', pos: [10, 0, 0], size: [2, 3, 2], color: 0xffffff, accent: 0xffb800 },
-  { name: 'OCS', pos: [-2, 0, 4], size: [1.5, 2, 1.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'KIOSK', pos: [6, 0, 3], size: [1, 2.5, 1], color: 0xffffff, accent: 0xffb800 },
-  { name: 'COFFEE', pos: [2, 0, 6], size: [1.5, 2.5, 1.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'CANDY', pos: [-4, 0, 10], size: [1.5, 2, 1.5], color: 0xffffff, accent: 0xffb800 },
-  { name: 'SNACKS', pos: [8, 0, 8], size: [2, 3.5, 2], color: 0xffffff, accent: 0xffb800 },
+  { name: 'CAR WASH', pos: [-14, 0, -14], size: [4, 3, 4], color: 0xffffff, accent: 0xffb800 },
+  { name: 'KIDDIE RIDE', pos: [0, 0, -16], size: [2, 2.5, 2], color: 0xffffff, accent: 0xffb800 },
+  { name: 'PHOTOBOOTH', pos: [14, 0, -14], size: [2, 4, 2], color: 0xffffff, accent: 0xffb800 },
+  { name: 'SMART FRIDGE', pos: [-16, 0, 0], size: [2, 4, 2], color: 0xffffff, accent: 0xffb800 },
+  { name: 'EV CHARGER', pos: [-6, 0, -4], size: [1.5, 3, 1.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'CIGARETTES', pos: [6, 0, -4], size: [2, 3.5, 2], color: 0xffffff, accent: 0xffb800 },
+  { name: 'LAUNDROMAT', pos: [16, 0, 0], size: [2, 3, 2], color: 0xffffff, accent: 0xffb800 },
+  { name: 'OCS', pos: [-3, 0, 6], size: [1.5, 2, 1.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'KIOSK', pos: [8, 0, 4], size: [1, 2.5, 1], color: 0xffffff, accent: 0xffb800 },
+  { name: 'COFFEE', pos: [3, 0, 8], size: [1.5, 2.5, 1.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'CANDY', pos: [-6, 0, 16], size: [1.5, 2, 1.5], color: 0xffffff, accent: 0xffb800 },
+  { name: 'SNACKS', pos: [14, 0, 14], size: [2, 3.5, 2], color: 0xffffff, accent: 0xffb800 },
 ];
 
 export default function Scene({ onMachineClick }: { onMachineClick?: (machineName: string) => void }) {
@@ -77,11 +77,11 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
     const accentMaterial = new THREE.MeshStandardMaterial({ color: 0xffb800, roughness: 0.3, metalness: 0.2 });
     const darkMaterial = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.5 });
     const glassMaterial = new THREE.MeshStandardMaterial({ color: 0x88ccff, roughness: 0.1, metalness: 0.8, transparent: true, opacity: 0.6 });
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x9a9aab, linewidth: 2 });
-    const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x9a9aab });
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x8b92ff, linewidth: 2, transparent: true, opacity: 0.6 });
+    const nodeMaterial = new THREE.MeshBasicMaterial({ color: 0x8b92ff });
 
     // 5. Create Machines and Labels
-    const machines: { mesh: THREE.Group; label: HTMLDivElement }[] = [];
+    const machines: { mesh: THREE.Group; label: HTMLDivElement; icon: HTMLDivElement }[] = [];
     
     // Helper to create a generic vending machine
     const createVendingMachine = (size: number[]) => {
@@ -155,21 +155,36 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
       label.textContent = data.name;
       labelsRef.current?.appendChild(label);
 
+      // Create Interactive Icon
+      const icon = document.createElement('div');
+      icon.className = 'absolute w-8 h-8 bg-[#8b92ff]/20 rounded-full flex items-center justify-center cursor-pointer pointer-events-auto hover:bg-[#8b92ff]/40 transition-colors border border-[#8b92ff]/30 group';
+      icon.style.transformOrigin = 'center center';
+      icon.style.transform = 'translate(-50%, -50%)';
+      icon.innerHTML = `
+        <div class="w-3 h-3 bg-[#8b92ff] rounded-full shadow-[0_0_10px_rgba(139,146,255,0.8)] group-hover:scale-125 transition-transform flex items-center justify-center">
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+        </div>
+      `;
+      icon.onclick = () => {
+        if (onMachineClick) onMachineClick(data.name);
+      };
+      labelsRef.current?.appendChild(icon);
+
       // Add userData for raycaster
       group.userData = { isMachine: true, name: data.name };
       group.children.forEach(child => {
         child.userData = { isMachine: true, name: data.name };
       });
 
-      machines.push({ mesh: group, label });
+      machines.push({ mesh: group, label, icon });
     });
 
     // Central "elecctro" Logo (Using HTML for crispness in isometric view)
     const centerLogo = document.createElement('div');
-    centerLogo.className = 'absolute text-4xl sm:text-6xl font-black text-[#333333] tracking-tighter pointer-events-none select-none flex items-center';
+    centerLogo.className = 'absolute text-5xl sm:text-7xl font-black text-[#1a1a1a] tracking-tighter pointer-events-none select-none flex items-center opacity-80';
     centerLogo.style.transformOrigin = 'center center';
     centerLogo.style.transform = 'translate(-50%, -50%) rotateX(60deg) rotateZ(-45deg)';
-    centerLogo.innerHTML = `elecc<span class="relative inline-flex items-center justify-center"><span class="absolute w-8 h-8 sm:w-12 sm:h-12 bg-[#ffb800] rounded-full -z-10"></span>t</span>ro`;
+    centerLogo.innerHTML = `elecc<span class="relative inline-flex items-center justify-center"><span class="absolute w-10 h-10 sm:w-14 sm:h-14 bg-[#ffb800] rounded-full -z-10"></span>t</span>ro`;
     labelsRef.current?.appendChild(centerLogo);
 
     // 6. Connections (Lines and Nodes)
@@ -178,17 +193,17 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
 
     // Define paths connecting machines
     const paths = [
-      [machineData[0].pos, [-4, 0, -8], machineData[2].pos],
-      [machineData[1].pos, [0, 0, -6], [-4, 0, -8]],
-      [machineData[3].pos, [-10, 0, -4], machineData[4].pos, [0, 0, -2], machineData[5].pos, machineData[6].pos],
-      [machineData[7].pos, [0, 0, 4], machineData[8].pos],
-      [machineData[10].pos, [-4, 0, 6], [0, 0, 6], machineData[9].pos],
-      [machineData[11].pos, [8, 0, 4], machineData[8].pos],
+      [machineData[0].pos, [-6, 0, -14], machineData[2].pos],
+      [machineData[1].pos, [0, 0, -10], [-6, 0, -14]],
+      [machineData[3].pos, [-16, 0, -4], machineData[4].pos, [0, 0, -4], machineData[5].pos, machineData[6].pos],
+      [machineData[7].pos, [0, 0, 6], machineData[8].pos],
+      [machineData[10].pos, [-6, 0, 8], [0, 0, 8], machineData[9].pos],
+      [machineData[11].pos, [14, 0, 4], machineData[8].pos],
       // Connect branches to center
-      [[-4, 0, -8], [-4, 0, -2]],
-      [[0, 0, -2], [0, 0, 0]],
-      [[0, 0, 4], [0, 0, 0]],
-      [[0, 0, 6], [0, 0, 4]],
+      [[-6, 0, -14], [-6, 0, -4]],
+      [[0, 0, -4], [0, 0, 0]],
+      [[0, 0, 6], [0, 0, 0]],
+      [[0, 0, 8], [0, 0, 6]],
     ];
 
     paths.forEach(path => {
@@ -313,8 +328,8 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
         machines.forEach((m, i) => {
           // Position Text Label (below the machine)
           tempV.copy(m.mesh.position);
-          tempV.x += 2; // Offset for isometric look
-          tempV.z += 2;
+          tempV.x += 2.5; // Offset for isometric look
+          tempV.z += 2.5;
           tempV.y = 0;
           tempV.project(camera);
           
@@ -322,6 +337,18 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
           const labelY = (tempV.y * -0.5 + 0.5) * h;
           m.label.style.left = `${labelX}px`;
           m.label.style.top = `${labelY}px`;
+
+          // Position Interactive Icon (next to the machine)
+          tempV.copy(m.mesh.position);
+          tempV.x += 1.5;
+          tempV.z -= 1.5;
+          tempV.y = 2;
+          tempV.project(camera);
+          
+          const iconX = (tempV.x * 0.5 + 0.5) * w;
+          const iconY = (tempV.y * -0.5 + 0.5) * h;
+          m.icon.style.left = `${iconX}px`;
+          m.icon.style.top = `${iconY}px`;
         });
 
         // Position Center Logo
@@ -378,7 +405,11 @@ export default function Scene({ onMachineClick }: { onMachineClick?: (machineNam
   }, []);
 
   return (
-    <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden" style={{
+      backgroundImage: 'radial-gradient(#e5e7eb 1px, transparent 1px)',
+      backgroundSize: '40px 40px',
+      backgroundColor: '#fafafa'
+    }}>
       {/* Three.js Canvas Container */}
       <div ref={mountRef} className="absolute inset-0 z-0" />
       

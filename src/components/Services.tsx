@@ -46,11 +46,26 @@ export default function Services() {
             <div key={index} className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-16 items-center`}>
               {/* Image Placeholder */}
               <div className="flex-1 w-full flex justify-center items-center">
-                <div className="w-64 h-96 bg-gray-50 rounded-3xl border border-gray-100 flex items-center justify-center shadow-xl relative overflow-hidden">
-                   {/* Simple representation of a machine */}
-                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white to-gray-100"></div>
-                   <service.icon className="w-24 h-24 text-gray-300 relative z-10" strokeWidth={1} />
-                   <div className="absolute bottom-6 w-3/4 h-2 bg-gray-200 rounded-full"></div>
+                <div className="w-72 h-[28rem] bg-white rounded-3xl border border-gray-100 flex flex-col items-center shadow-2xl relative overflow-hidden group p-4">
+                   <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-gray-50 to-gray-100 opacity-50 pointer-events-none"></div>
+                   
+                   {/* Image Container */}
+                   <div className="w-full flex-1 relative z-20 rounded-2xl overflow-hidden mb-6 bg-gray-100 shadow-inner">
+                     <img 
+                       src={`https://picsum.photos/seed/${service.title.replace(/\s+/g, '')}/600/800`} 
+                       alt={service.title} 
+                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                       referrerPolicy="no-referrer"
+                     />
+                   </div>
+
+                   {/* Icon & Bar */}
+                   <div className="relative z-20 w-full flex items-center justify-between px-4 pb-2">
+                     <div className="w-1/2 h-2 bg-gray-200 rounded-full"></div>
+                     <div className="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center border border-gray-50">
+                       <service.icon className="w-6 h-6 text-gray-400" strokeWidth={1.5} />
+                     </div>
+                   </div>
                 </div>
               </div>
 
