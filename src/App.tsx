@@ -6,11 +6,13 @@ import Hero from './components/Hero';
 import Services from './components/Services';
 import CarWashPage from './components/CarWashPage';
 import ContactFooter from './components/ContactFooter';
+import LoginFlow from './components/LoginFlow';
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' | 'login' | 'dashboard'>('home');
 
   const handleLoadingComplete = () => {
     setIsTransitioning(true);
@@ -24,13 +26,15 @@ function App() {
     if (isTransitioning) return;
     
     // Map string to valid page type, default to home if not found
-    let targetPage: 'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' = 'home';
+    let targetPage: 'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' | 'login' | 'dashboard' = 'home';
     if (page === 'car-wash') targetPage = 'car-wash';
     if (page === 'services') targetPage = 'services';
     if (page === 'projects') targetPage = 'projects';
     if (page === 'about') targetPage = 'about';
     if (page === 'careers') targetPage = 'careers';
     if (page === 'contacts') targetPage = 'contacts';
+    if (page === 'login') targetPage = 'login';
+    if (page === 'dashboard') targetPage = 'dashboard';
     if (page === 'home') targetPage = 'home';
 
     if (currentPage === targetPage) return;
@@ -66,7 +70,7 @@ function App() {
         <LoadingScreen onComplete={handleLoadingComplete} />
       ) : (
         <>
-          <Navbar onNavigate={navigateTo} />
+          {!['login', 'dashboard'].includes(currentPage) && <Navbar onNavigate={navigateTo} />}
           <main className="flex-1">
             {currentPage === 'home' && (
               <div className="h-screen overflow-hidden">
@@ -81,6 +85,12 @@ function App() {
             )}
             {currentPage === 'car-wash' && (
               <CarWashPage />
+            )}
+            {currentPage === 'login' && (
+              <LoginFlow onComplete={() => navigateTo('dashboard')} />
+            )}
+            {currentPage === 'dashboard' && (
+              <Dashboard onLogout={() => navigateTo('home')} />
             )}
             {['projects', 'about', 'careers', 'contacts'].includes(currentPage) && (
               <div className="min-h-screen bg-white pt-32 px-6 flex flex-col items-center justify-center">

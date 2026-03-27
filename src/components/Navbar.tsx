@@ -80,7 +80,7 @@ export default function Navbar({ onNavigate }: { onNavigate: (id: string) => voi
           <button className="hidden sm:flex items-center gap-2 bg-[#f0f0f9] hover:bg-[#e4e4f0] text-[#1a1a1a] px-4 py-2.5 rounded-lg text-sm font-semibold transition-colors">
             <Globe className="w-4 h-4" /> EN
           </button>
-          <button onClick={() => onNavigate('contacts')} className="bg-[#1a1a1a] hover:bg-black text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+          <button onClick={() => onNavigate('login')} className="bg-[#1a1a1a] hover:bg-black text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
             <div className="w-5 h-5 rounded-full bg-[#ffb800] flex items-center justify-center">
               <ArrowRight className="w-3 h-3 text-black" />
             </div>
