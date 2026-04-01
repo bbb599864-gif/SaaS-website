@@ -1,0 +1,147 @@
+{
+  "entities": {
+    "Tenant": {
+      "title": "Tenant",
+      "description": "A company or organization using the SaaS platform.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "plan": { "type": "string", "enum": ["basic", "pro", "enterprise"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "plan"]
+    },
+    "Robot": {
+      "title": "Robot",
+      "description": "A warehouse robot unit.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "warehouseId": { "type": "string" },
+        "status": { "type": "string", "enum": ["available", "employed", "maintenance", "offline"] },
+        "battery": { "type": "number" },
+        "position": {
+          "type": "object",
+          "properties": {
+            "x": { "type": "number" },
+            "y": { "type": "number" }
+          }
+        },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "status", "battery", "position"]
+    },
+    "InventoryItem": {
+      "title": "Inventory Item",
+      "description": "A stock item with advanced management fields.",
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string", "enum": ["A", "B", "C"] },
+        "physicalStock": { "type": "number" },
+        "availableStock": { "type": "number" },
+        "netStock": { "type": "number" },
+        "optimalStock": { "type": "number" },
+        "safetyStock": { "type": "number" },
+        "cycleStock": { "type": "number" },
+        "seasonalStock": { "type": "number" },
+        "deadStock": { "type": "number" },
+        "unitCost": { "type": "number" },
+        "holdingCost": { "type": "number" },
+        "orderingCost": { "type": "number" },
+        "healthScore": { "type": "number" },
+        "forecastDemand": { "type": "number" },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      },
+      "required": ["sku", "tenantId", "name", "physicalStock"]
+    },
+    "Batch": {
+      "title": "Batch",
+      "description": "A specific lot of inventory for FIFO/LIFO tracking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "sku": { "type": "string" },
+        "quantity": { "type": "number" },
+        "receivedAt": { "type": "string", "format": "date-time" },
+        "expiryDate": { "type": "string", "format": "date-time" },
+        "cost": { "type": "number" }
+      },
+      "required": ["id", "tenantId", "sku", "quantity", "receivedAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A warehouse task.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "type": { "type": "string", "enum": ["pick", "stow", "move", "recharge"] },
+        "status": { "type": "string", "enum": ["created", "assigned", "processing", "done", "error"] },
+        "robotId": { "type": "string" },
+        "sku": { "type": "string" },
+        "quantity": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "type", "status", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "An order from ERP.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "erpId": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "processing", "shipped", "cancelled"] },
+        "items": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "erpId", "status", "items", "createdAt"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "Traceability for all system actions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "userId": { "type": "string" },
+        "action": { "type": "string" },
+        "entityType": { "type": "string" },
+        "entityId": { "type": "string" },
+        "details": { "type": "object" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "tenantId", "userId", "action", "timestamp"]
+    },
+    "User": {
+      "title": "User",
+      "description": "System user profile.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "tenantId": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "manager", "operator"] },
+        "displayName": { "type": "string" }
+      },
+      "required": ["uid", "tenantId", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/tenants/{tenantId}": { "schema": "Tenant", "description": "Tenant data." },
+    "/robots/{robotId}": { "schema": "Robot", "description": "Robot units." },
+    "/inventory/{sku}": { "schema": "InventoryItem", "description": "Inventory." },
+    "/batches/{batchId}": { "schema": "Batch", "description": "Inventory batches." },
+    "/tasks/{taskId}": { "schema": "Task", "description": "Warehouse tasks." },
+    "/orders/{orderId}": { "schema": "Order", "description": "ERP orders." },
+    "/audit_logs/{logId}": { "schema": "AuditLog", "description": "Audit trail." },
+    "/users/{userId}": { "schema": "User", "description": "User profiles." }
+  }
+}

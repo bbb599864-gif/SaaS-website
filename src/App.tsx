@@ -8,11 +8,12 @@ import CarWashPage from './components/CarWashPage';
 import ContactFooter from './components/ContactFooter';
 import LoginFlow from './components/LoginFlow';
 import Dashboard from './components/Dashboard';
+import AnalyticsDemo from './components/AnalyticsDemo';
 
 function App() {
   const [loading, setLoading] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' | 'login' | 'dashboard'>('home');
+  const [currentPage, setCurrentPage] = useState<'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' | 'login' | 'dashboard' | 'analytics'>('home');
 
   const handleLoadingComplete = () => {
     setIsTransitioning(true);
@@ -26,7 +27,7 @@ function App() {
     if (isTransitioning) return;
     
     // Map string to valid page type, default to home if not found
-    let targetPage: 'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' | 'login' | 'dashboard' = 'home';
+    let targetPage: 'home' | 'car-wash' | 'services' | 'projects' | 'about' | 'careers' | 'contacts' | 'login' | 'dashboard' | 'analytics' = 'home';
     if (page === 'car-wash') targetPage = 'car-wash';
     if (page === 'services') targetPage = 'services';
     if (page === 'projects') targetPage = 'projects';
@@ -35,6 +36,7 @@ function App() {
     if (page === 'contacts') targetPage = 'contacts';
     if (page === 'login') targetPage = 'login';
     if (page === 'dashboard') targetPage = 'dashboard';
+    if (page === 'analytics') targetPage = 'analytics';
     if (page === 'home') targetPage = 'home';
 
     if (currentPage === targetPage) return;
@@ -91,6 +93,9 @@ function App() {
             )}
             {currentPage === 'dashboard' && (
               <Dashboard onLogout={() => navigateTo('home')} />
+            )}
+            {currentPage === 'analytics' && (
+              <AnalyticsDemo />
             )}
             {['projects', 'about', 'careers', 'contacts'].includes(currentPage) && (
               <div className="min-h-screen bg-white pt-32 px-6 flex flex-col items-center justify-center">

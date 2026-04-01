@@ -1,0 +1,82 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isTenantMember(tenantId) {
+      return isAuthenticated() && getUserData().tenantId == tenantId;
+    }
+
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin') || (request.auth.token.email == "bbb599864@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    function isManager() {
+      return hasRole('manager') || isAdmin();
+    }
+
+    function isOperator() {
+      return hasRole('operator') || isManager();
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /tenants/{tenantId} {
+      allow read: if isTenantMember(tenantId);
+      allow write: if isAdmin() && isTenantMember(tenantId);
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isManager());
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    match /robots/{robotId} {
+      allow read: if isAuthenticated() && isTenantMember(resource.data.tenantId);
+      allow write: if isAuthenticated() && isTenantMember(request.resource.data.tenantId) && isOperator();
+    }
+
+    match /inventory/{sku} {
+      allow read: if isAuthenticated() && isTenantMember(resource.data.tenantId);
+      allow write: if isAuthenticated() && isTenantMember(request.resource.data.tenantId) && isManager();
+    }
+
+    match /batches/{batchId} {
+      allow read: if isAuthenticated() && isTenantMember(resource.data.tenantId);
+      allow write: if isAuthenticated() && isTenantMember(request.resource.data.tenantId) && isManager();
+    }
+
+    match /tasks/{taskId} {
+      allow read: if isAuthenticated() && isTenantMember(resource.data.tenantId);
+      allow write: if isAuthenticated() && isTenantMember(request.resource.data.tenantId) && isOperator();
+    }
+
+    match /orders/{orderId} {
+      allow read: if isAuthenticated() && isTenantMember(resource.data.tenantId);
+      allow write: if isAuthenticated() && isTenantMember(request.resource.data.tenantId) && isManager();
+    }
+
+    match /audit_logs/{logId} {
+      allow read: if isAuthenticated() && isTenantMember(resource.data.tenantId) && isManager();
+      allow create: if isAuthenticated() && isTenantMember(request.resource.data.tenantId);
+      allow update, delete: if false;
+    }
+  }
+}
