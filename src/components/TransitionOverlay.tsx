@@ -23,7 +23,7 @@ export default function TransitionOverlay({
   return (
     <AnimatePresence>
       {isTransitioning && (
-        <div className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden">
+        <div className="fixed inset-0 z-100 pointer-events-none flex items-center justify-center overflow-hidden">
           {colors.map((color, index) => (
             <motion.svg
               key={index}

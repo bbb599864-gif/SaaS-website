@@ -58,7 +58,7 @@ export default function LoginFlow({ onComplete }: LoginFlowProps) {
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-6xl bg-white rounded-[2.5rem] shadow-2xl shadow-black/5 overflow-hidden flex flex-col lg:flex-row min-h-[750px]"
+        className="w-full max-w-6xl bg-white rounded-[2.5rem] shadow-2xl shadow-black/5 overflow-hidden flex flex-col lg:flex-row min-h-187.5"
       >
         {/* Left Side: Form Content */}
         <div className="flex-1 p-8 sm:p-12 lg:p-20 flex flex-col justify-center">
@@ -99,9 +99,9 @@ export default function LoginFlow({ onComplete }: LoginFlowProps) {
                 </div>
 
                 <div className="relative flex items-center justify-center mb-10">
-                  <div className="flex-grow border-t border-gray-100"></div>
-                  <span className="flex-shrink mx-4 text-gray-400 text-[10px] font-black uppercase tracking-[0.4em]">Or</span>
-                  <div className="flex-grow border-t border-gray-100"></div>
+                  <div className="grow border-t border-gray-100"></div>
+                  <span className="shrink mx-4 text-gray-400 text-[10px] font-black uppercase tracking-[0.4em]">Or</span>
+                  <div className="grow border-t border-gray-100"></div>
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
@@ -227,7 +227,7 @@ export default function LoginFlow({ onComplete }: LoginFlowProps) {
               alt="Industrial Tech"
               referrerPolicy="no-referrer"
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a]/90 via-[#1a1a1a]/40 to-transparent flex flex-col justify-end p-16">
+            <div className="absolute inset-0 bg-linear-to-br from-[#1a1a1a]/90 via-[#1a1a1a]/40 to-transparent flex flex-col justify-end p-16">
               <div className="max-w-md">
                 <div className="w-16 h-2 bg-[#ffb800] mb-8 rounded-full shadow-[0_0_20px_rgba(255,184,0,0.5)]" />
                 <h2 className="text-5xl font-black text-white mb-6 leading-[0.95] tracking-tighter uppercase italic">

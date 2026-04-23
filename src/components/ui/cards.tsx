@@ -1,77 +1,67 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { ArrowRight, Box, Coffee, Car, WashingMachine, Camera, Monitor, Zap, Droplets, ShoppingCart, Cigarette, Gamepad2, Candy } from 'lucide-react';
+import * as React from "react";
+import { motion } from "motion/react";
+import { Package, Droplets, Coffee, Zap, Car, Camera, ArrowRight } from "lucide-react";
+import MiniMachine from "../MiniMachine";
 
-import MiniMachine from './MiniMachine';
+export function ServiceCards() {
+  const services = [
+    {
+      title: "Smart Fridge",
+      category: "Automated Retail",
+      description: "Control access, ensure food safety, and boost sales with secure payments via smart fridges.",
+      image: "https://images.unsplash.com/photo-1584263347416-85a696b4eda7?auto=format&fit=crop&q=80&w=1200",
+      icon: Package,
+    },
+    {
+      title: "Laundromat",
+      category: "Self-Service",
+      description: "Offer easy payments, run sites remotely, and reduce costs with secure, connected laundromats.",
+      image: "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?auto=format&fit=crop&q=80&w=1200",
+      icon: Droplets,
+    },
+    {
+      title: "Smart Coffee",
+      category: "Kiosks",
+      description: "Smart coffee points with flexible payments, remote control, and detailed insights.",
+      image: "https://images.unsplash.com/photo-1611162458324-aae1eb4129a4?auto=format&fit=crop&q=80&w=1200",
+      icon: Coffee,
+    },
+    {
+      title: "EV Charger",
+      category: "Infrastructure",
+      description: "Easy payments, remote control, and seamless integrations in rugged hardware for any weather.",
+      image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&q=80&w=1200",
+      icon: Zap,
+    },
+    {
+      title: "Car Wash",
+      category: "Automotive",
+      description: "Drive more visits and revenue with smart, secure payment solutions for car washes.",
+      image: "https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?auto=format&fit=crop&q=80&w=1200",
+      icon: Car,
+    },
+    {
+      title: "Photobooth",
+      category: "Entertainment",
+      description: "Boost sales and cut costs with secure, cashless payments for photobooths in any location.",
+      image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=1200",
+      icon: Camera,
+    },
+  ];
 
-const services = [
-  { title: 'Snacks', desc: 'Boost sales, improve efficiency and cut costs with fast payments, smart data and remote control.', icon: ShoppingCart },
-  { title: 'Smart Fridge', desc: 'Control access, ensure food safety and boost sales with secure payments and full remote management.', icon: Box },
-  { title: 'OCS', desc: 'Smart coffee points with flexible payments, remote control, detailed insights and compact hardware.', icon: Coffee },
-  { title: 'Photobooth', desc: 'Capture more smiles and revenue with seamless cashless payments and remote monitoring.', icon: Camera },
-  { title: 'Laundromat', desc: 'Offer easy payments, run sites remotely and reduce costs with secure, connected laundry solutions.', icon: WashingMachine },
-  { title: 'Kiosk', desc: 'Cashless, secure and smart solutions to optimise self-checkout kiosks and micro markets anywhere.', icon: Monitor },
-  { title: 'Kiddie Ride', desc: 'Drive more sales with simple, contactless payments for ride operators of any size or location.', icon: Gamepad2 },
-  { title: 'EV Charger', desc: 'Easy payments, remote control, seamless integrations and rugged hardware for any weather.', icon: Zap },
-  { title: 'Cigarettes', desc: 'Enable age-verified, secure and cashless sales for tobacco vending with real-time data and control.', icon: Cigarette },
-  { title: 'Coffee', desc: 'Upgrade coffee machines with fast payments, telemetry and loyalty programs to boost sales.', icon: Coffee },
-  { title: 'Car Wash', desc: 'Drive more visits and revenue with smart, secure and seamless payment solutions for car washes.', icon: Car },
-  { title: 'Candy', desc: 'Cashless, secure and smart payment solutions for candy dispensers in any location.', icon: Candy },
-  { title: 'Parkomat', desc: 'Enable fast cashless access, real-time control and smooth integration with any parking setup.', icon: Car },
-  { title: 'Water', desc: 'Cashless, secure and remotely managed solutions for profitable water and ice vending.', icon: Droplets },
-];
-
-export default function Services() {
   return (
-    <div className="w-full bg-white min-h-screen pt-32 overflow-x-hidden">
+    <div className="w-full bg-transparent min-h-screen py-12 overflow-x-hidden">
       {/* Header Section */}
-      <div className="max-w-7xl mx-auto px-4 md:px-8 mb-32 flex flex-col md:flex-row justify-between items-end gap-12 md:gap-8">
-        
-        {/* Left Side Creative Element */}
-        <div className="w-full md:w-1/2 flex items-start justify-start text-left">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col gap-6"
-          >
-            <div className="flex gap-3 flex-wrap">
-              {['Vending', 'Telemetry', 'Cashless', 'IoT'].map((tag, i) => (
-                <motion.span 
-                  key={tag}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1, type: "spring" }}
-                  className="px-6 py-3 rounded-full bg-slate-100 text-slate-600 font-semibold text-sm tracking-wide border border-slate-200"
-                >
-                  {tag}
-                </motion.span>
-              ))}
-            </div>
-            <p className="text-2xl md:text-3xl font-medium text-slate-400 leading-snug">
-              Transforming unattended retail<br className="hidden md:block"/> with smart payment solutions.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* Right Side Title */}
-        <div className="w-full md:w-1/2 text-left md:text-right flex flex-col md:items-end">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 mb-32 flex justify-end">
+        <div className="max-w-2xl text-right">
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold text-slate-900 tracking-tight leading-[1.1] transition-all duration-500 hover:blur-[4px] cursor-default"
           >
             Explore our services<br />and use cases
           </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-lg md:text-xl text-slate-500 mt-8 max-w-md font-medium"
-          >
+          <p className="text-lg md:text-xl text-slate-500 mt-8 ml-auto max-w-md font-medium">
             Boost sales, reduce costs and improve operational efficiency with remote access to real-time data.
-          </motion.p>
+          </p>
         </div>
       </div>
 
@@ -129,7 +119,7 @@ export default function Services() {
                       </div>
                       <div className="flex flex-col w-full md:w-2/3">
                         <p className="text-[#a8a1c9] text-lg md:text-xl leading-relaxed mb-10">
-                          {service.desc}
+                          {service.description}
                         </p>
                         <div>
                           <button className="flex items-center gap-3 bg-white text-slate-900 pr-5 pl-2 py-2 rounded-xl font-semibold transition-transform shadow-md hover:shadow-lg hover:scale-105 active:scale-95 text-sm md:text-base w-fit">

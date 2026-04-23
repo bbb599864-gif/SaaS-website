@@ -3,8 +3,8 @@ import { ArrowRight } from 'lucide-react';
 
 export default function Contact() {
   return (
-    <section id="contacts" className="w-full py-32 px-6 bg-gradient-to-br from-[#4a2b8c] to-[#8b3dff] text-white">
-      <div className="max-w-[1600px] mx-auto grid lg:grid-cols-2 gap-16">
+    <section id="contacts" className="w-full py-32 px-6 bg-linear-to-br from-[#4a2b8c] to-[#8b3dff] text-white">
+      <div className="max-w-400 mx-auto grid lg:grid-cols-2 gap-16">
         <div>
           <h2 className="text-6xl md:text-[100px] font-black tracking-tighter uppercase leading-[0.9] mb-12">
             Get in<br/>touch<br/>with us
@@ -24,7 +24,7 @@ export default function Contact() {
           </div>
         </div>
         
-        <div className="bg-white/10 backdrop-blur-md p-8 md:p-12 rounded-[2rem]">
+        <div className="bg-white/10 backdrop-blur-md p-8 md:p-12 rounded-4xl">
           <h3 className="text-2xl font-bold mb-8">Get in touch with our team to discuss your needs</h3>
           <form className="space-y-8">
             <div className="grid md:grid-cols-2 gap-8">

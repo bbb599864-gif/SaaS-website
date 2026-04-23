@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { AreaChartAnalyticsCard } from "@/components/ui/area-chart-analytics-card";
+import { ServiceCards } from "./ui/cards";
 import { WarehouseAnalytics } from "./WarehouseAnalytics";
 import { 
   Search, 
@@ -87,73 +88,165 @@ const ordersData   = [40,55,42,68,73,58,80,92,78,65,88,95,72,60,85,90,76,82,70,8
 
 // --- COMPONENTS ---
 
-const MenuBar = ({ user, onLogout, activeTab, setActiveTab }: { user: any, onLogout?: () => void, activeTab: string, setActiveTab: (t: string) => void }) => {
-  const tabs = ["Warehouse", "Analytics", "Robot", "Tasks", "Pick Rates", "Employees", "Inventory", "Audit Logs"];
-  
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      if (onLogout) onLogout();
-    } catch (error) {
-      console.error("Error signing out:", error);
+const Sidebar = ({ activeTab, setActiveTab, user }: { activeTab: string, setActiveTab: (t: string) => void, user: any }) => {
+  const menuGroups = [
+    {
+      title: "General",
+      items: [
+        { id: "Warehouse", icon: MapIcon, label: "Home" },
+        { id: "Services", icon: LayoutGrid, label: "Services Showcase" },
+        { id: "Analytics", icon: BarChart3, label: "Analytics" },
+      ]
+    },
+    {
+      title: "Operations",
+      items: [
+        { id: "Robot", icon: Cpu, label: "Robot Fleet" },
+        { id: "Tasks", icon: ClipboardList, label: "Task Orchestration" },
+        { id: "Pick Rates", icon: TrendingUp, label: "Pick Rates" },
+      ]
+    },
+    {
+      title: "Inventory",
+      items: [
+        { id: "Inventory", icon: Package, label: "Stock Management" },
+        { id: "Audit Logs", icon: Activity, label: "Audit Logs" },
+      ]
+    },
+    {
+      title: "System",
+      items: [
+        { id: "Employees", icon: Users, label: "Employees" },
+        { id: "Settings", icon: Settings, label: "Settings" },
+      ]
     }
-  };
+  ];
 
   return (
-    <nav className="h-[52px] bg-white border-b border-[#f0f2f5] flex items-center px-5 gap-0 fixed top-0 left-0 right-0 z-[100]">
-      <div className="flex items-center gap-2 mr-8">
-        <span className="text-xl font-black tracking-tighter text-gray-800 flex items-center">
-          elecc
-          <span className="relative inline-flex items-center justify-center">
-            <span className="absolute w-4 h-4 bg-[#ffb800] rounded-full -z-10"></span>
-            t
-          </span>
-          ro
-        </span>
+    <div className="w-64 bg-white border-r border-slate-200 flex flex-col h-full shrink-0">
+      <div className="p-6 flex items-center gap-3">
+        <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+          <Zap className="w-5 h-5 text-white" />
+        </div>
+        <div>
+          <h1 className="text-slate-900 font-bold text-lg tracking-tight">Navexa</h1>
+          <p className="text-slate-400 text-[10px] font-medium uppercase tracking-wider">Warehouse OS</p>
+        </div>
       </div>
-      
-      <div className="flex items-center gap-0.5 flex-1 justify-center">
-        {tabs.map(t => (
-          <button 
-            key={t} 
-            onClick={() => setActiveTab(t)}
-            className={`px-3.5 py-1.5 text-[13px] font-medium rounded-md transition-all whitespace-nowrap ${
-              activeTab === t ? "text-gray-900 bg-white shadow-sm" : "text-gray-500 hover:text-gray-900 hover:bg-gray-100"
-            }`}
-          >
-            {t}
-          </button>
+
+      <div className="flex-1 overflow-y-auto px-4 py-2 space-y-6 custom-scrollbar">
+        {menuGroups.map((group) => (
+          <div key={group.title}>
+            <h3 className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-4 px-2">{group.title}</h3>
+            <div className="space-y-1">
+              {group.items.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
+                    activeTab === item.id 
+                      ? "bg-blue-50 text-blue-600 shadow-sm" 
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  }`}
+                >
+                  <item.icon className={`w-4.5 h-4.5 transition-colors ${
+                    activeTab === item.id ? "text-blue-600" : "group-hover:text-blue-500"
+                  }`} />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 
-      <div className="flex items-center gap-3">
-        <div className="flex flex-col items-end mr-2">
-          <div className="flex items-center gap-2">
-            <span className="text-[12px] font-bold text-gray-900">{user?.displayName || "System User"}</span>
-            <div className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase tracking-tighter ${
-              user?.role === 'admin' ? 'bg-red-100 text-red-600 border border-red-200' : 
-              user?.role === 'manager' ? 'bg-blue-100 text-blue-600 border border-blue-200' : 
-              'bg-gray-100 text-gray-600 border border-gray-200'
-            }`}>
-              {user?.role || 'Guest'}
+      <div className="p-4 mt-auto">
+        <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+              {user?.displayName?.substring(0, 1) || "U"}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-slate-900 text-sm font-bold truncate">{user?.displayName || "User"}</p>
+              <p className="text-slate-500 text-[10px] truncate">{user?.email || "user@navexa.ai"}</p>
             </div>
           </div>
-          <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{user?.tenantId || "Global"}</span>
         </div>
-        <button className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors">
-          <Search className="w-4 h-4" />
-        </button>
-        <button className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors relative">
-          <Bell className="w-4 h-4" />
-          <div className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full border-[1.5px] border-white" />
-        </button>
-        <button onClick={handleSignOut} className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:text-red-500 hover:bg-gray-100 transition-colors">
-          <LogOut className="w-4 h-4" />
-        </button>
       </div>
-    </nav>
+    </div>
   );
 };
+
+const TopBar = ({ onAiToggle, user, onLogout }: { onAiToggle: () => void, user: any, onLogout?: () => void }) => {
+  return (
+    <div className="h-16 border-b border-slate-200 bg-white flex items-center px-6 justify-between shrink-0">
+      <div className="flex items-center gap-6">
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-slate-900 text-[11px] font-bold uppercase tracking-wider">System Online</span>
+          <div className="w-px h-3 bg-slate-200 mx-1" />
+          <span className="text-slate-500 text-[11px] font-medium">Throughput: 345 u/h</span>
+        </div>
+        
+        <div className="hidden lg:flex items-center gap-4">
+          <div className="flex items-center gap-2 text-slate-500">
+            <Cpu className="w-4 h-4" />
+            <span className="text-xs font-medium">Fleet: 48/72</span>
+          </div>
+          <div className="flex items-center gap-2 text-slate-500">
+            <Activity className="w-4 h-4" />
+            <span className="text-xs font-medium">Uptime: 99.9%</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <div className="relative group">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+          <input 
+            type="text" 
+            placeholder="Search warehouse..." 
+            className="bg-slate-50 border border-slate-200 rounded-xl py-2 pl-10 pr-4 text-sm text-slate-900 focus:outline-none focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 transition-all w-64 placeholder:text-slate-400"
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={onAiToggle}
+            className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-blue-600 hover:border-blue-500/30 transition-all relative"
+          >
+            <BrainCircuit className="w-5 h-5" />
+            <div className="absolute top-2 right-2 w-2 h-2 bg-blue-500 rounded-full border-2 border-white" />
+          </button>
+          <button className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all relative">
+            <Bell className="w-5 h-5" />
+            <div className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+          </button>
+          <button 
+            onClick={() => signOut()}
+            className="p-2.5 bg-white border border-slate-200 rounded-xl text-slate-500 hover:text-red-500 transition-all"
+          >
+            <LogOut className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const DashboardCard = ({ title, children, className = "", headerAction }: { title?: string, children: React.ReactNode, className?: string, headerAction?: React.ReactNode }) => (
+  <div className={`bg-white border border-slate-200 rounded-2xl overflow-hidden flex flex-col shadow-sm ${className}`}>
+    {title && (
+      <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 className="text-slate-900 text-sm font-bold tracking-tight">{title}</h3>
+        {headerAction}
+      </div>
+    )}
+    <div className="flex-1 overflow-hidden">
+      {children}
+    </div>
+  </div>
+);
 
 const BatchModal = ({ item, onClose, tenantId }: { item: any, onClose: () => void, tenantId: string }) => {
   const [batches, setBatches] = useState<any[]>([]);
@@ -392,10 +485,10 @@ const AuditLogPanel = ({ tenantId }: { tenantId: string }) => {
   );
 };
 
-const AIInsightsPanel = ({ selectedWarehouse, robots, inventory, tenantId, onLogAction }: { selectedWarehouse: number | null, robots: any[], inventory: any[], tenantId: string, onLogAction?: (action: string, details: any) => void }) => {
-  const [showHistory, setShowHistory] = useState(false);
-  const [aiInsights, setAiInsights] = useState<any[]>([]);
+const AIIntelligencePanel = ({ inventory, selectedWarehouse, tenantId, onLogAction }: { inventory: any[], selectedWarehouse: number | null, tenantId: string, onLogAction?: (a: string, p: any) => Promise<void> }) => {
   const [loading, setLoading] = useState(false);
+  const [aiInsights, setAiInsights] = useState<any[]>([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   const fetchAIInsights = async () => {
     setLoading(true);
@@ -487,6 +580,307 @@ const AIInsightsPanel = ({ selectedWarehouse, robots, inventory, tenantId, onLog
             </motion.div>
           ))}
         </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
+const AIAssistantPanel = ({ isOpen, onClose, inventory }: { isOpen: boolean, onClose: () => void, inventory: any[] }) => {
+  const [messages, setMessages] = useState<any[]>([
+    { role: "assistant", content: "Hello! I'm your Navexa warehouse AI assistant. I've analyzed your inventory and found potential optimization areas. How can I help you today?" }
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
+    const userMsg = input.trim();
+    setMessages(prev => [...prev, { role: "user", content: userMsg }]);
+    setInput("");
+    setLoading(true);
+
+    try {
+      // In a real app, this would call the Gemini API via a service
+      const criticalItems = inventory.filter(i => (i.healthScore || 100) < 50);
+      
+      setTimeout(() => {
+        let response = "I've analyzed the system. ";
+        if (userMsg.toLowerCase().includes("replenish") || userMsg.toLowerCase().includes("stock")) {
+          response += `You have ${criticalItems.length} items with critical stock levels. I recommend prioritizing SKU ${criticalItems[0]?.sku || 'SKU-001'} for immediate reorder.`;
+        } else if (userMsg.toLowerCase().includes("eoq")) {
+          response += "The Economic Order Quantity (EOQ) model suggests balancing ordering costs and holding costs. For your high-value items, increasing order frequency by 15% could reduce holding costs by $2.4k/month.";
+        } else {
+          response += "Based on current throughput, Warehouse 1 is operating at 84% capacity. Robot utilization is optimal, but battery levels for the Haulix fleet are averaging 54%.";
+        }
+        setMessages(prev => [...prev, { role: "assistant", content: response }]);
+        setLoading(false);
+      }, 1000);
+    } catch (error) {
+      setMessages(prev => [...prev, { role: "assistant", content: "I'm sorry, I encountered an error connecting to the intelligence core." }]);
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ x: '100%' }}
+          animate={{ x: 0 }}
+          exit={{ x: '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+          className="fixed top-0 right-0 w-[380px] h-full bg-white shadow-2xl z-[200] flex flex-col border-l border-gray-100"
+        >
+          <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center text-green-600">
+                <BrainCircuit className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-gray-900">AI Warehouse Intelligence</h3>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Live Analysis</span>
+                </div>
+              </div>
+            </div>
+            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+              <X className="w-4 h-4 text-gray-400" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            {messages.map((msg, i) => (
+              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[85%] p-3 rounded-2xl text-[12.5px] leading-relaxed ${
+                  msg.role === 'user' 
+                    ? 'bg-blue-600 text-white rounded-tr-none' 
+                    : 'bg-gray-100 text-gray-800 rounded-tl-none'
+                }`}>
+                  {msg.content}
+                </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-gray-100 p-3 rounded-2xl rounded-tl-none flex gap-1">
+                  <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce" />
+                  <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                  <div className="w-1 h-1 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                </div>
+              </div>
+            )}
+            <div ref={scrollRef} />
+          </div>
+
+          <div className="p-4 border-t border-gray-100 bg-gray-50/30">
+            <div className="flex flex-wrap gap-2 mb-3">
+              {["Replenishment alerts", "EOQ Analysis", "Robot status"].map(tag => (
+                <button 
+                  key={tag}
+                  onClick={() => setInput(tag)}
+                  className="text-[10px] font-bold px-2 py-1 bg-white border border-gray-200 rounded-md text-gray-500 hover:border-green-500 hover:text-green-600 transition-all"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+            <div className="relative">
+              <input 
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSend()}
+                placeholder="Ask about inventory, forecasts..."
+                className="w-full bg-white border border-gray-200 rounded-xl py-2.5 pl-4 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all"
+              />
+              <button 
+                onClick={handleSend}
+                disabled={!input.trim() || loading}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-gray-900 text-white rounded-lg flex items-center justify-center hover:bg-black disabled:opacity-30 transition-all"
+              >
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
+const PickRatePanel = () => {
+  const zones = [
+    { zone: "Zone A", picks: 1842, accuracy: 98.7, robots: 12, avgTime: 2.3, efficiency: 94 },
+    { zone: "Zone B", picks: 1124, accuracy: 97.2, robots: 8, avgTime: 3.1, efficiency: 78 },
+    { zone: "Zone C", picks: 2310, accuracy: 99.1, robots: 18, avgTime: 1.8, efficiency: 97 },
+    { zone: "Zone D", picks: 856, accuracy: 96.8, robots: 6, avgTime: 3.8, efficiency: 71 },
+    { zone: "Zone E", picks: 432, accuracy: 98.3, robots: 4, avgTime: 2.9, efficiency: 83 }
+  ];
+
+  return (
+    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Picks Today</div>
+          <div className="text-2xl font-bold text-gray-900">6,564</div>
+          <div className="text-[10px] text-green-600 font-bold mt-1">+8.2% vs yesterday</div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Avg Accuracy</div>
+          <div className="text-2xl font-bold text-gray-900">98.0%</div>
+          <div className="text-[10px] text-green-600 font-bold mt-1">Above 97% SLA</div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Avg Pick Time</div>
+          <div className="text-2xl font-bold text-gray-900">2.78s</div>
+          <div className="text-[10px] text-green-600 font-bold mt-1">-0.3s vs last week</div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Active Robots</div>
+          <div className="text-2xl font-bold text-gray-900">48/72</div>
+          <div className="text-[10px] text-gray-500 font-bold mt-1">Normal range</div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-[#f0f2f5] flex flex-col overflow-hidden">
+        <div className="p-4 border-b border-gray-50 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-gray-900">Pick Rate by Zone</h3>
+          <button className="text-[11px] font-bold text-blue-600 hover:underline">Export CSV</button>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-gray-50">
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Zone</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Picks Today</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Accuracy</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Robots</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Avg Time</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Efficiency</th>
+              </tr>
+            </thead>
+            <tbody>
+              {zones.map((z, i) => (
+                <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <td className="p-4 text-sm font-bold text-gray-900">{z.zone}</td>
+                  <td className="p-4 text-sm font-medium text-gray-600">{z.picks.toLocaleString()}</td>
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-green-500" style={{ width: `${z.accuracy}%` }} />
+                      </div>
+                      <span className="text-xs font-bold text-gray-700">{z.accuracy}%</span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-sm text-gray-600">{z.robots}</td>
+                  <td className="p-4 text-sm text-gray-600">{z.avgTime}s</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                      z.efficiency > 90 ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'
+                    }`}>
+                      {z.efficiency}% {z.efficiency > 90 ? 'Optimal' : 'Good'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const EmployeePanel = () => {
+  const employees = [
+    { name: "Ahmad Ramadhan", role: "Warehouse Operator", shift: "Morning", zone: "A,B", picks: 312, status: "active" },
+    { name: "Siti Nurhaliza", role: "Senior Picker", shift: "Morning", zone: "C", picks: 428, status: "active" },
+    { name: "Budi Santoso", role: "Robot Supervisor", shift: "Evening", zone: "All", picks: 0, status: "active" },
+    { name: "Rini Anggraini", role: "Inventory Manager", shift: "Morning", zone: "All", picks: 0, status: "active" },
+    { name: "Dodi Pratama", role: "Warehouse Operator", shift: "Evening", zone: "D,E", picks: 198, status: "on-break" },
+    { name: "Maya Sari", role: "QA Inspector", shift: "Night", zone: "B,C", picks: 0, status: "scheduled" }
+  ];
+
+  return (
+    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Total Staff</div>
+          <div className="text-2xl font-bold text-gray-900">{employees.length}</div>
+          <div className="text-[10px] text-gray-500 font-bold mt-1">Full capacity</div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Active Now</div>
+          <div className="text-2xl font-bold text-gray-900">{employees.filter(e => e.status === 'active').length}</div>
+          <div className="text-[10px] text-green-600 font-bold mt-1">Morning shift</div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Avg Picks/Staff</div>
+          <div className="text-2xl font-bold text-gray-900">285</div>
+          <div className="text-[10px] text-green-600 font-bold mt-1">+5% vs target</div>
+        </div>
+        <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+          <div className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Shifts Today</div>
+          <div className="text-2xl font-bold text-gray-900">3</div>
+          <div className="text-[10px] text-gray-500 font-bold mt-1">Normal schedule</div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-[#f0f2f5] flex flex-col overflow-hidden">
+        <div className="p-4 border-b border-gray-50 flex items-center justify-between">
+          <h3 className="text-sm font-bold text-gray-900">Staff Directory</h3>
+          <div className="flex gap-2">
+            <button className="px-3 py-1.5 bg-gray-50 text-gray-600 rounded-lg text-[11px] font-bold hover:bg-gray-100 transition-colors">Manage Schedule</button>
+            <button className="px-3 py-1.5 bg-gray-900 text-white rounded-lg text-[11px] font-bold hover:bg-black transition-colors">Add Employee</button>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-gray-50">
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Name</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Role</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Shift</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Zones</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Picks Today</th>
+                <th className="p-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees.map((e, i) => (
+                <tr key={i} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                  <td className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-[10px] font-bold text-gray-500">
+                        {e.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <span className="text-sm font-bold text-gray-900">{e.name}</span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-sm text-gray-600">{e.role}</td>
+                  <td className="p-4">
+                    <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-md text-[10px] font-bold uppercase tracking-wider">{e.shift}</span>
+                  </td>
+                  <td className="p-4 text-sm text-gray-600">{e.zone}</td>
+                  <td className="p-4 text-sm font-bold text-gray-900">{e.picks > 0 ? e.picks.toLocaleString() : '—'}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                      e.status === 'active' ? 'bg-green-100 text-green-600' : 
+                      e.status === 'on-break' ? 'bg-yellow-100 text-yellow-600' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      {e.status.replace('-', ' ')}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
@@ -897,6 +1291,7 @@ export default function Dashboard({ onLogout }: { onLogout?: () => void }) {
   const [activeTab, setActiveTab] = useState("Warehouse");
   const [filter, setFilter] = useState("all");
   const [selectedWarehouse, setSelectedWarehouse] = useState<number | null>(null);
+  const [aiOpen, setAiOpen] = useState(false);
 
   const logAction = async (action: string, details: any) => {
     try {
@@ -922,39 +1317,47 @@ export default function Dashboard({ onLogout }: { onLogout?: () => void }) {
   }, []);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user?.email || user.tenantId) return;
 
     // Fetch user profile to get tenantId
     const fetchUserProfile = async () => {
-      const userDoc = await getDoc(doc(db, 'users', user.email));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setUser(prev => ({ ...prev, ...userData }));
+      try {
+        const userDoc = await getDoc(doc(db, 'users', user.email));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUser((prev: any) => ({ ...prev, ...userData }));
+        } else {
+          setUser((prev: any) => ({ ...prev, tenantId: 'TENANT-001' }));
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        setUser((prev: any) => ({ ...prev, tenantId: 'TENANT-001' }));
       }
     };
     fetchUserProfile();
+  }, [user?.email, user?.tenantId]);
 
-    // Real-time Firestore Listeners with tenant filtering
-    const unsubscribeRobots = onSnapshot(query(collection(db, 'robots'), where('tenantId', '==', user.tenantId || 'TENANT-001')), (snapshot) => {
-      const robotData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setRobots(robotData);
-    }, (error) => {
-      console.error("Robots sync error:", error);
-    });
+  useEffect(() => {
+    if (!user?.tenantId) return;
 
-    const unsubscribeInventory = onSnapshot(collection(db, 'inventory'), (snapshot) => {
-      const inventoryData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setInventory(inventoryData);
-    }, (error) => {
-      console.error("Inventory sync error:", error);
-    });
+    // Fetch data using getDocs instead of onSnapshot to prevent gRPC stream timeouts on idle collections
+    const fetchData = async () => {
+      try {
+        const robotsQuery = query(collection(db, 'robots'), where('tenantId', '==', user.tenantId || 'TENANT-001'));
+        const robotsSnapshot = await getDocs(robotsQuery);
+        setRobots(robotsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
 
-    const unsubscribeTasks = onSnapshot(collection(db, 'tasks'), (snapshot) => {
-      const taskData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setTasks(taskData);
-    }, (error) => {
-      console.error("Tasks sync error:", error);
-    });
+        const inventorySnapshot = await getDocs(collection(db, 'inventory'));
+        setInventory(inventorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+
+        const tasksSnapshot = await getDocs(collection(db, 'tasks'));
+        setTasks(tasksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
 
     // WebSocket for telemetry
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -975,12 +1378,9 @@ export default function Dashboard({ onLogout }: { onLogout?: () => void }) {
     };
 
     return () => {
-      unsubscribeRobots();
-      unsubscribeInventory();
-      unsubscribeTasks();
       ws.close();
     };
-  }, [user]);
+  }, [user?.tenantId]);
 
   const filteredRobots = robots.filter(r => {
     const matchesFilter = filter === "all" || r.status === filter;
@@ -1040,309 +1440,235 @@ export default function Dashboard({ onLogout }: { onLogout?: () => void }) {
   }
 
   return (
-    <div className="h-screen w-screen relative overflow-hidden font-sans text-gray-900 bg-[#e8ecf0] flex flex-col">
-      <MenuBar user={user} onLogout={onLogout} activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="h-screen w-screen relative overflow-hidden font-sans text-slate-900 bg-[#F8FAFC] flex">
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} user={user} />
       
-      <main className="flex-1 pt-[52px] p-4 flex flex-col gap-3.5 overflow-hidden">
-        {activeTab === "Analytics" ? (
-          <AnalyticsPanel 
-            selectedWarehouse={selectedWarehouse} 
-            onWarehouseSelect={setSelectedWarehouse} 
-            robots={robots} 
-            inventory={inventory} 
-            tasks={tasks}
-            tenantId={user.tenantId || 'TENANT-001'}
-          />
-        ) : (
-          <>
-            {/* Title + Stats Row */}
-            <div className="flex items-center justify-between bg-white rounded-2xl p-3.5 px-5 shadow-sm border border-[#f0f2f5]">
-              <div className="flex items-center gap-3.5">
-                <div 
-                  className="w-7 h-7 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer text-gray-500 hover:bg-gray-200 transition-colors"
-                  onClick={() => setSelectedWarehouse(null)}
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-[22px] font-bold text-gray-900 tracking-tight">
-                    {selectedWarehouse ? `Warehouse ${selectedWarehouse}` : "All Warehouses"}
-                  </div>
-                  <div className="text-[10.5px] text-gray-400 mt-0.5">
-                    {selectedWarehouse ? `№412589815-${selectedWarehouse}` : "Global Network"}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-9">
-                <div className="flex items-center gap-3">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[26px] font-bold text-gray-900 tracking-tight">{filteredRobots.length}</span>
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    </div>
-                    <div className="text-[12px] text-gray-400 mt-0.5">Robots</div>
-                  </div>
-                  <div className="flex items-end gap-0.5 h-7.5 w-13">
-                    {[3,5,4,7,5,8,6,9,7,10,8,6].map((h, i) => (
-                      <div key={i} className="w-1 bg-green-500 rounded-t-[2px]" style={{ height: `${h * 3}px`, opacity: i > 8 ? 1 : 0.5 }} />
-                    ))}
-                  </div>
-                </div>
-                <div className="w-px h-9 bg-gray-200" />
-                <div className="flex items-center gap-3">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[26px] font-bold text-gray-900 tracking-tight">30</span>
-                      <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                    </div>
-                    <div className="text-[12px] text-gray-400 mt-0.5">Associates</div>
-                  </div>
-                  <div className="flex items-end gap-0.5 h-7.5 w-13">
-                    {[3,5,4,7,5,8,6,9,7,10,8,6].map((h, i) => (
-                      <div key={i} className="w-1 bg-green-500 rounded-t-[2px]" style={{ height: `${h * 3}px`, opacity: i > 8 ? 1 : 0.5 }} />
-                    ))}
-                  </div>
-                </div>
-                <div className="w-px h-9 bg-gray-200" />
-                <div className="flex items-center gap-3">
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[26px] font-bold text-gray-900 tracking-tight">345</span>
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                    </div>
-                    <div className="text-[12px] text-gray-400 mt-0.5">Throughput</div>
-                  </div>
-                  <div className="flex items-end gap-0.5 h-7.5 w-13">
-                    {[3,5,4,7,5,8,6,9,7,10,8,6].map((h, i) => (
-                      <div key={i} className="w-1 bg-green-500 rounded-t-[2px]" style={{ height: `${h * 3}px`, opacity: i > 8 ? 1 : 0.5 }} />
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <div className="flex bg-gray-100 rounded-lg p-0.5 gap-0.5">
-                  <button className="px-2.5 py-1 text-[11px] font-medium rounded-md bg-white text-gray-900 shadow-sm">Floor 1</button>
-                  <div className="w-px bg-gray-200 my-0.5" />
-                  <div className="flex items-center px-1 text-gray-400"><RefreshCw className="w-3 h-3" /></div>
-                  <div className="w-px bg-gray-200 my-0.5" />
-                  <button className="px-2.5 py-1 text-[11px] font-medium rounded-md text-gray-400 hover:text-gray-900">Floor 2</button>
-                </div>
-                <button className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"><Settings className="w-4 h-4" /></button>
-                <button className="w-8 h-8 rounded-lg flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"><Bookmark className="w-4 h-4" /></button>
-              </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="flex-1 flex gap-3.5 overflow-hidden min-h-0">
-              {/* Left Sidebar */}
-              <div className="w-[270px] flex-shrink-0 flex flex-col bg-white/90 backdrop-blur-xl border border-white/80 shadow-lg rounded-2xl overflow-hidden">
-                <div className="p-3.5 border-b border-[#f0f2f5]">
-                  <div className="flex items-center justify-between mb-2.5">
-                    <span className="text-[13px] font-semibold text-gray-900">Report operations</span>
-                    <div className="flex gap-0.5">
-                      <button className="w-6.5 h-6.5 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100"><Search className="w-3.5 h-3.5" /></button>
-                      <button className="w-6.5 h-6.5 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100"><Settings className="w-3.5 h-3.5" /></button>
-                    </div>
-                  </div>
-                  <div className="flex gap-1 p-0.5 bg-gray-100 rounded-lg">
-                    {["all", "available", "employed"].map(f => (
-                      <button 
-                        key={f} 
-                        onClick={() => setFilter(f)}
-                        className={`flex-1 py-1 text-[11px] font-medium rounded-md transition-all ${
-                          filter === f ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-900"
-                        }`}
-                      >
-                        {f === "all" ? "All" : (
-                          <span className="flex items-center gap-1 justify-center">
-                            <div className={`w-1.5 h-1.5 rounded-full ${f === "available" ? "bg-green-500" : "bg-red-500"}`} />
-                            {f.charAt(0).toUpperCase() + f.slice(1)}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                
-                <AIInsightsPanel 
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <TopBar onAiToggle={() => setAiOpen(true)} user={user} onLogout={onLogout} />
+        
+        <main className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="h-full flex flex-col gap-6"
+            >
+              {activeTab === "Services" ? (
+                <ServiceCards />
+              ) : activeTab === "Analytics" ? (
+                <AnalyticsPanel 
                   selectedWarehouse={selectedWarehouse} 
-                  robots={filteredRobots} 
-                  inventory={filteredInventory} 
+                  onWarehouseSelect={setSelectedWarehouse} 
+                  robots={robots} 
+                  inventory={inventory} 
+                  tasks={tasks}
                   tenantId={user.tenantId || 'TENANT-001'}
-                  onLogAction={logAction}
                 />
-
-                {selectedWarehouse && (
-                  <div className="p-3.5 border-b border-[#f0f2f5] bg-blue-50/30">
-                    <div className="flex items-center justify-between mb-2.5">
-                      <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Stock Summary</span>
-                      <button 
-                        onClick={() => setActiveTab("Inventory")}
-                        className="text-[10px] font-bold text-blue-500 hover:underline"
-                      >
-                        View All
-                      </button>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between items-center">
-                        <span className="text-[12px] text-gray-600">Total SKUs</span>
-                        <span className="text-[12px] font-bold text-gray-900">{filteredInventory.length}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-[12px] text-gray-600">Low Stock Items</span>
-                        <span className="text-[12px] font-bold text-red-500">{filteredInventory.filter(i => i.stock < 20).length}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-[12px] text-gray-600">Total Units</span>
-                        <span className="text-[12px] font-bold text-gray-900">
-                          {filteredInventory.reduce((acc, curr) => acc + (curr.stock || 0), 0).toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
-                  {filteredRobots.map((robot, i) => (
-                    <React.Fragment key={robot.id}>
-                      <RobotCard robot={robot} />
-                      {i < filteredRobots.length - 1 && <div className="h-px bg-gray-50 mx-2 my-0.5" />}
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-
-              {/* Map + Charts */}
-              <div className="flex-1 flex flex-col gap-3.5 min-w-0">
-                {activeTab === "Inventory" ? (
-                  <InventoryPanel inventory={filteredInventory} fullWidth tenantId={user.tenantId || 'TENANT-001'} onLogAction={logAction} />
-                ) : activeTab === "Audit Logs" ? (
-                  <AuditLogPanel tenantId={user.tenantId || 'TENANT-001'} />
-                ) : activeTab === "Tasks" ? (
-                  <TaskPanel tasks={tasks} tenantId={user.tenantId || 'TENANT-001'} />
-                ) : activeTab === "Analytics" ? (
-                  <AnalyticsPanel 
-                    selectedWarehouse={selectedWarehouse}
-                    onWarehouseSelect={setSelectedWarehouse}
-                    robots={robots}
-                    inventory={inventory}
-                    tasks={tasks}
-                    tenantId={user.tenantId || 'TENANT-001'} 
-                  />
-                ) : ["Pick Rates", "Employees", "Robot"].includes(activeTab) ? (
-                  <div className="flex-1 flex items-center justify-center text-gray-400 flex-col gap-4">
-                    <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center border border-gray-100">
-                      <Layout className="w-8 h-8 opacity-20" />
-                    </div>
-                    <div className="text-center">
-                      <h3 className="text-lg font-bold text-gray-900">{activeTab} Module</h3>
-                      <p className="text-sm">This module is currently being optimized for tenant {user?.tenantId}.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <WarehouseMap 
-                      robots={robots} 
-                      selectedWarehouse={selectedWarehouse} 
-                      onWarehouseSelect={setSelectedWarehouse} 
-                    />
-                    
-                    <div className="flex gap-3.5 h-[160px]">
-                      <div className="flex-1 bg-white rounded-2xl p-4 shadow-sm border border-[#f0f2f5] flex flex-col">
-                        <div className="flex items-center justify-between mb-2.5">
-                          <span className="text-[12px] font-semibold text-gray-700">
-                            {selectedWarehouse ? `Warehouse ${selectedWarehouse}` : "Global"} workload
-                          </span>
-                          <div className="flex gap-1">
-                            <button className="w-6.5 h-6.5 bg-gray-50 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100"><LayoutGrid className="w-3.5 h-3.5" /></button>
-                            <button className="w-6.5 h-6.5 bg-gray-50 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100"><ArrowUpRight className="w-3.5 h-3.5" /></button>
+              ) : activeTab === "Pick Rates" ? (
+                <PickRatePanel />
+              ) : activeTab === "Employees" ? (
+                <EmployeePanel />
+              ) : activeTab === "Inventory" ? (
+                <InventoryPanel inventory={filteredInventory} fullWidth tenantId={user.tenantId || 'TENANT-001'} onLogAction={logAction} />
+              ) : activeTab === "Audit Logs" ? (
+                <AuditLogPanel tenantId={user.tenantId || 'TENANT-001'} />
+              ) : activeTab === "Tasks" ? (
+                <TaskPanel tasks={tasks} tenantId={user.tenantId || 'TENANT-001'} />
+              ) : activeTab === "Warehouse" ? (
+                <div className="grid grid-cols-12 grid-rows-6 gap-6 h-full min-h-[800px]">
+                  {/* Top Stats Row */}
+                  <div className="col-span-12 row-span-1 grid grid-cols-4 gap-6">
+                    {[
+                      { label: "Active Robots", value: filteredRobots.length, icon: Cpu, color: "text-blue-600", trend: "+12%" },
+                      { label: "Daily Throughput", value: "3,452", icon: Zap, color: "text-amber-600", trend: "+5.4%" },
+                      { label: "Inventory Health", value: "94%", icon: Shield, color: "text-emerald-600", trend: "+0.2%" },
+                      { label: "Active Tasks", value: filteredTasks.length, icon: ClipboardList, color: "text-indigo-600", trend: "-2" },
+                    ].map((stat, i) => (
+                      <div key={i} className="bg-white border border-slate-200 rounded-2xl p-5 flex items-center justify-between shadow-sm">
+                        <div>
+                          <p className="text-slate-500 text-[11px] font-bold uppercase tracking-wider mb-1">{stat.label}</p>
+                          <div className="flex items-baseline gap-2">
+                            <h4 className="text-2xl font-black text-slate-900">{stat.value}</h4>
+                            <span className={`text-[10px] font-bold ${stat.trend.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>{stat.trend}</span>
                           </div>
                         </div>
-                        <div className="flex items-end gap-3 mb-2.5">
-                          <div className="flex items-baseline gap-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 mb-0.5" />
-                            <span className="text-[24px] font-bold text-gray-900 tracking-tight">
-                              {selectedWarehouse ? (5.867 / (selectedWarehouse + 1)).toFixed(3) : "5.867"}
-                            </span>
-                            <span className="text-[11px] text-gray-400">/ uploads</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-[10px] text-gray-400">Capacity</span>
-                              <span className="text-[10px] font-semibold text-gray-900">
-                                {selectedWarehouse ? (84 - selectedWarehouse * 5) : 84}%
-                              </span>
-                            </div>
-                            <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${selectedWarehouse ? (84 - selectedWarehouse * 5) : 84}%` }} />
-                            </div>
-                          </div>
+                        <div className={`w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center ${stat.color}`}>
+                          <stat.icon className="w-6 h-6" />
                         </div>
-                        <div className="flex-1 flex items-end gap-0.5">
-                          {workloadBars.slice(0, 28).map((v, i) => (
-                            <div 
-                              key={i} 
-                              className="flex-1 bg-green-500/80 rounded-t-sm transition-all duration-500" 
-                              style={{ height: `${((v * (selectedWarehouse ? (1 - selectedWarehouse * 0.1) : 1)) / 100) * 44}px` }} 
-                            />
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Main Chart Area */}
+                  <DashboardCard 
+                    title="Warehouse Throughput" 
+                    className="col-span-8 row-span-3"
+                    headerAction={
+                      <div className="flex bg-slate-50 p-1 rounded-lg gap-1 border border-slate-200">
+                        {["7D", "30D", "Custom"].map(t => (
+                          <button key={t} className={`px-3 py-1 text-[10px] font-bold rounded-md ${t === "7D" ? "bg-white text-slate-900 shadow-sm" : "text-slate-400"}`}>{t}</button>
+                        ))}
+                      </div>
+                    }
+                  >
+                    <div className="h-full p-6">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={ordersData.map((v, i) => ({ name: i, value: v, value2: v * 0.8 }))}>
+                          <defs>
+                            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.1}/>
+                              <stop offset="95%" stopColor="#3B82F6" stopOpacity={0}/>
+                            </linearGradient>
+                            <linearGradient id="colorValue2" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#10B981" stopOpacity={0.1}/>
+                              <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+                          <XAxis dataKey="name" hide />
+                          <YAxis hide />
+                          <Tooltip 
+                            contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                            itemStyle={{ color: '#0F172A' }}
+                          />
+                          <Area type="monotone" dataKey="value" stroke="#3B82F6" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" />
+                          <Area type="monotone" dataKey="value2" stroke="#10B981" strokeWidth={3} fillOpacity={1} fill="url(#colorValue2)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </DashboardCard>
+
+                  {/* Right Detail Panel */}
+                  <DashboardCard title="Warehouse Intelligence" className="col-span-4 row-span-3">
+                    <div className="p-5 space-y-6">
+                      <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+                          <BrainCircuit className="w-7 h-7" />
+                        </div>
+                        <div>
+                          <h4 className="text-slate-900 font-bold">Navexa Core AI</h4>
+                          <p className="text-slate-500 text-xs">Processing 1.2M events/sec</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-500 text-xs font-medium">Network Latency</span>
+                          <span className="text-slate-900 text-xs font-bold">12ms</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-500 text-xs font-medium">Robot Sync Rate</span>
+                          <span className="text-emerald-600 text-xs font-bold">99.8%</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-500 text-xs font-medium">Storage Utilization</span>
+                          <span className="text-slate-900 text-xs font-bold">84.2%</span>
+                        </div>
+                      </div>
+
+                      <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl">
+                        <p className="text-blue-600 text-[11px] leading-relaxed font-medium">
+                          AI Insight: Warehouse 1 throughput is projected to increase by 15% in the next 4 hours. Recommend pre-staging SKU-004 in Zone B.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <button className="py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all">System Logs</button>
+                        <button className="py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20">Optimize Fleet</button>
+                      </div>
+                    </div>
+                  </DashboardCard>
+
+                  {/* Bottom Row */}
+                  <DashboardCard title="Quick Dispatch" className="col-span-4 row-span-2">
+                    <div className="p-5 space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Select SKU</label>
+                        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                          <span className="text-slate-900 text-sm">SKU-412589</span>
+                          <ChevronDown className="w-4 h-4 text-slate-400" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Quantity</label>
+                        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
+                          <span className="text-slate-900 text-sm">1,250</span>
+                          <span className="text-slate-400 text-xs">MAX</span>
+                        </div>
+                      </div>
+                      <button className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all mt-2 shadow-lg shadow-blue-500/20">Dispatch Robot</button>
+                    </div>
+                  </DashboardCard>
+
+                  <DashboardCard title="Active Tasks" className="col-span-5 row-span-2">
+                    <div className="overflow-auto h-full">
+                      <table className="w-full text-left">
+                        <thead className="sticky top-0 bg-white z-10">
+                          <tr className="border-b border-slate-200">
+                            <th className="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Task</th>
+                            <th className="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                            <th className="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Robot</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {filteredTasks.slice(0, 5).map((task, i) => (
+                            <tr key={i} className="hover:bg-slate-50 transition-colors">
+                              <td className="px-5 py-3 text-xs text-slate-900 font-medium">{task.type}</td>
+                              <td className="px-5 py-3">
+                                <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold uppercase ${
+                                  task.status === 'completed' ? 'text-emerald-600 bg-emerald-50' : 'text-blue-600 bg-blue-50'
+                                }`}>
+                                  {task.status}
+                                </span>
+                              </td>
+                              <td className="px-5 py-3 text-xs text-slate-500">{task.robotId || 'Auto'}</td>
+                            </tr>
                           ))}
-                        </div>
-                      </div>
-
-                      <div className="flex-1 bg-white rounded-2xl p-4 shadow-sm border border-[#f0f2f5] flex flex-col">
-                        <div className="flex items-center justify-between mb-2.5">
-                          <span className="text-[12px] font-semibold text-gray-700">
-                            {selectedWarehouse ? `W${selectedWarehouse}` : "Daily"} picked orders
-                          </span>
-                          <div className="flex gap-1">
-                            <button className="w-6.5 h-6.5 bg-gray-50 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100"><LayoutGrid className="w-3.5 h-3.5" /></button>
-                            <button className="w-6.5 h-6.5 bg-gray-50 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100"><ArrowUpRight className="w-3.5 h-3.5" /></button>
-                          </div>
-                        </div>
-                        <div className="flex items-end gap-3 mb-2.5">
-                          <div className="flex items-baseline gap-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 mb-0.5" />
-                            <span className="text-[24px] font-bold text-gray-900 tracking-tight">
-                              {selectedWarehouse ? (125.321 / (selectedWarehouse + 1)).toFixed(3) : "125.321"}
-                            </span>
-                            <span className="text-[11px] text-gray-400">/ orders</span>
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex justify-between mb-1">
-                              <span className="text-[10px] text-gray-400">Processed</span>
-                              <span className="text-[10px] font-semibold text-gray-900">
-                                {selectedWarehouse ? (62 + selectedWarehouse * 3) : 62}%
-                              </span>
-                            </div>
-                            <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                              <div className="h-full bg-green-500 transition-all duration-500" style={{ width: `${selectedWarehouse ? (62 + selectedWarehouse * 3) : 62}%` }} />
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex-1">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={ordersData.map(v => ({ v: v * (selectedWarehouse ? (1 + selectedWarehouse * 0.05) : 1) }))}>
-                              <defs>
-                                <linearGradient id="colorV" x1="0" y1="0" x2="0" y2="1">
-                                  <stop offset="5%" stopColor="#22c55e" stopOpacity={0.2}/>
-                                  <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
-                                </linearGradient>
-                              </defs>
-                              <Area type="monotone" dataKey="v" stroke="#22c55e" strokeWidth={2} fillOpacity={1} fill="url(#colorV)" />
-                            </AreaChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </div>
+                        </tbody>
+                      </table>
                     </div>
-                  </>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-      </main>
+                  </DashboardCard>
+
+                  <DashboardCard title="Fleet Status" className="col-span-3 row-span-2">
+                    <div className="p-5 space-y-4">
+                      {[
+                        { label: "Available", value: "32", color: "bg-emerald-500" },
+                        { label: "Charging", value: "12", color: "bg-amber-500" },
+                        { label: "Maintenance", value: "4", color: "bg-rose-500" },
+                      ].map((item, i) => (
+                        <div key={i} className="space-y-2">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-slate-500">{item.label}</span>
+                            <span className="text-slate-900 font-bold">{item.value}</span>
+                          </div>
+                          <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div className={`h-full ${item.color}`} style={{ width: `${(parseInt(item.value) / 48) * 100}%` }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </DashboardCard>
+                </div>
+              ) : (
+                <div className="flex-1 flex items-center justify-center text-slate-400 flex-col gap-4">
+                  <div className="w-16 h-16 rounded-3xl bg-white flex items-center justify-center border border-slate-200 shadow-sm">
+                    <Layout className="w-8 h-8 opacity-20" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="text-lg font-bold text-slate-900">{activeTab} Module</h3>
+                    <p className="text-sm">This module is currently being optimized for tenant {user?.tenantId}.</p>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </main>
+      </div>
+
+      <AIAssistantPanel isOpen={aiOpen} onClose={() => setAiOpen(false)} inventory={inventory} />
 
       <style dangerouslySetInnerHTML={{ __html: `
         .custom-scrollbar::-webkit-scrollbar {
@@ -1352,11 +1678,11 @@ export default function Dashboard({ onLogout }: { onLogout?: () => void }) {
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #d1d5db;
+          background: #E2E8F0;
           border-radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #9ca3af;
+          background: #CBD5E1;
         }
       `}} />
     </div>

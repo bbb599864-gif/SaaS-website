@@ -23,6 +23,8 @@ export interface InventoryItem {
   leadTimeDays: number;
   demandVariability: number; // Standard deviation of demand
   lastUpdated: string;
+  maxStock?: number;
+  minStock?: number;
 }
 
 export interface Batch {
@@ -163,5 +165,51 @@ export class InventoryService {
     return batches
       .filter(b => b.lastMovementAt && new Date(b.lastMovementAt) < ninetyDaysAgo)
       .reduce((acc, b) => acc + b.quantity, 0);
+  }
+
+  /**
+   * Calculate a comprehensive health score for an inventory item.
+   * Score is out of 100.
+   */
+  static calculateHealthScore(item: InventoryItem): { score: number, risk: string, flags: string[], daysOfSupply: number } {
+    const dailyDemand = item.forecastDemand / 365;
+    const daysOfSupply = Math.round(item.physicalStock / Math.max(dailyDemand, 0.01));
+    const capacityRatio = item.physicalStock / item.maxStock;
+    const minStockRatio = item.physicalStock / Math.max(item.minStock, 1);
+    
+    let score = 100;
+    let risk = "healthy";
+    const flags: string[] = [];
+
+    // Stockout Risk
+    if (item.physicalStock < item.minStock) {
+      score -= 35;
+      risk = minStockRatio < 0.5 ? "critical" : "low";
+      flags.push(minStockRatio < 0.5 ? "Critical stockout risk" : "Below minimum level");
+    }
+
+    // Overstock Risk
+    if (capacityRatio > 1.15) {
+      score -= 25;
+      if (risk === "healthy") risk = "overstock";
+      flags.push("Overstock detected");
+    }
+
+    // Lead Time Risk
+    if (daysOfSupply < item.leadTimeDays) {
+      score -= 20;
+      flags.push("Stock below lead time");
+    }
+
+    // Turnover Risk (assuming turnover is provided or calculated elsewhere)
+    // For this prototype, we'll use a placeholder logic if turnover was in the item
+    // but since it's not in the interface, we'll skip or add it if needed.
+
+    return {
+      score: Math.max(0, Math.round(score)),
+      risk,
+      flags,
+      daysOfSupply
+    };
   }
 }

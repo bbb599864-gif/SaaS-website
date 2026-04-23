@@ -4,6 +4,7 @@ import TransitionOverlay from './components/TransitionOverlay';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Services from './components/Services';
+import QuestionsDivider from './components/QuestionsDivider';
 import CarWashPage from './components/CarWashPage';
 import ContactFooter from './components/ContactFooter';
 import LoginFlow from './components/LoginFlow';
@@ -82,6 +83,7 @@ function App() {
             {currentPage === 'services' && (
               <div className="bg-white min-h-screen">
                 <Services />
+                <QuestionsDivider />
                 <ContactFooter />
               </div>
             )}

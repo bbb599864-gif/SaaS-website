@@ -9,7 +9,7 @@ interface HeroProps {
 export default function Hero({ onMachineClick }: HeroProps) {
   return (
     <section id="hero" className="pt-24 pb-12 px-4 sm:px-6 flex flex-col min-h-screen">
-      <div className="relative flex-1 w-full max-w-[1600px] mx-auto bg-isometric-grid rounded-[2rem] overflow-hidden border border-gray-200 shadow-sm min-h-[600px]">
+      <div className="relative flex-1 w-full max-w-[1600px] mx-auto bg-isometric-grid rounded-4xl overflow-hidden border border-gray-200 shadow-sm min-h-[600px]">
         <Scene onMachineClick={onMachineClick} />
         <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 bg-[#ff5a00] text-white p-4 sm:p-5 rounded-xl flex items-center gap-4 shadow-xl max-w-sm z-20 border-4 border-[#ff5a00]">
           <div className="bg-white p-3 rounded-lg flex items-center justify-center relative shrink-0">
